@@ -2,7 +2,7 @@
 
 This file contains R code and data to run the analysis for the article:
 
-**Malaj, E.**, and Morrissey CA. (2021). Increased reliance on insecticide in Canada linked to simplified agricultural landscapes *In Review in Ecological Applications* 
+**Malaj, E.**, and Morrissey CA. (2021). Increased reliance on insecticides in Canada linked to simplified agricultural landscapes *Submitted at Ecological Applications* 
 
 ## Depends
 
