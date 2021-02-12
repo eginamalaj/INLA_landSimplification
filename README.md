@@ -15,4 +15,4 @@ To run this analysis files are require:
 
 R version 4.0.3
 
-Packages: tidyverse, doBy, INLA, rgdal, spdep, egg, cowplot, plyr, cowplot, glmmTMB, DHARMa, emmeans, MCMCglmm, coda, ape
+Packages: tidyverse, doBy, INLA, rgdal, spdep, egg, cowplot, plyr, glmmTMB, DHARMa, emmeans, MCMCglmm, coda, ape
