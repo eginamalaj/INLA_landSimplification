@@ -25,6 +25,7 @@ require(cowplot)
 require(glmmTMB)
 require(DHARMa)
 require(emmeans)
+require(car)
 #
 # For plotting INLA
 require(MCMCglmm)
@@ -51,6 +52,8 @@ load("data/camapF2.RData") # call:camapF2 - Fortified Canada polygon file from c
 # Summary of parameters for Table 1
 #
 # ------------------------------------------------------------------------------------------------------
+#
+findatCD<-findatCD%>% dplyr::select(-INSECTI) # remove insecticide area
 #
 parsum<- as.data.frame(
   findatCD%>%
@@ -142,7 +145,7 @@ ls_plot<-plot(ls_m, comparisons =
         panel.border = element_rect(colour = "black", fill = NA),
         plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm"))+ 
   #scale_y_discrete(breaks = c(0.15,0.25,0.35,0.45,0.55,0.65,0.75))+
-  labs(y = "", x = "Landscape Simplification (%)")+
+  labs(y = "", x = "Landscape Simplification")+
   zero_margin 
 #
 #
@@ -158,7 +161,7 @@ ins_plot<-
         panel.grid.minor = element_blank(),
         plot.margin = unit(c(-1,0.2,1,0.2), "cm"))+ # ("top", "right", "bottom", "left") # remove the white space of around the graph
   #scale_y_discrete(breaks = c(0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16))+
-  labs(y = "", x = "Insecticide Use (%)")+
+  labs(y = "", x = "Insecticide Applications")+
   zero_margin 
 #
 ls_ins<-plot_grid(ls_plot,ins_plot, nrow = 2) #, rel_heights = c(3/5, 2/5)
@@ -329,7 +332,7 @@ ins_p<-
             legend.title=element_text(size=14),
             legend.text=element_text(size=12),
             plot.margin = unit(c(-0.7,0.1,-0.6,0.1), "cm"))+
-      scale_fill_manual(name="Change in \nInsecticide Use (%)", #(white = no data) \n1996-2016
+      scale_fill_manual(name="Change in \nInsecticide Applications (%)", #(white = no data) \n1996-2016
                         values= c("#2166AC","#D1E5F0", # cols generated from brewer.pal(10,"RdBu")
                                   "#FDBB84", 
                                   "#EF6548","#D7301F",
@@ -857,7 +860,7 @@ pred_plot<-
             axis.text.y = element_text(colour="black"))+
       #scale_x_continuous(expand = c(0, 0)) +
       #scale_y_continuous(sec.axis = sec_axis(~ ., breaks = d_ends))+
-      labs(x = "Landscape Simplification", y = "Predicted Insecticide Use")
+  labs(x = "Landscape Simplification", y = "Predicted Insecticide Applications")
 #
 # Plot INLA Estimates
 #
