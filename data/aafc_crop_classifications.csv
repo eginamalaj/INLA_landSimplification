@@ -1,0 +1,73 @@
+Label,Code,Definition,Code_Habitat,Label_Habitat
+Cloud,10,"Areas unclassified due to cloud, shadow or other image quality factors.",0,notRelevant
+Water,20,"Water bodies (lakes, reservoirs, rivers, streams, salt water, etc). ",0,notRelevant
+Exposed Land / Barren,30,"Land that is predominately non-vegetated and non-developed. Includes: glacier, rock, sediments, burned areas, rubble, mines, other naturally occurring non-vegetated surfaces. Excludes fallow agriculture",0,notRelevant
+Urban / Developed,34,"Land that predominantly built-up or developed and vegetation associated with these land covers. This includes road surfaces, railway surfaces, buildings and paved surfaces, urban areas, industrial sites, mine structures, golf courses, etc.",0,notRelevant
+Greenhouses,35,Greenhouses have been visually identified from satellite imagery,0,notRelevant
+Shrubland,50,"Predominantly woody vegetation of relatively low height (generally +/-2 meters). May include grass or wetlands with woody vegetation, regenerating forest.",1,semiNatural
+Wetland,80,"Land with a water table near/at/above soil surface for enough time to promote wetland or aquatic processes (semi-permanent or permanent wetland vegetation, including fens, bogs, swamps, sloughs, marshes etc).",1,semiNatural
+Peatland,85,Wetlands that are commercially harvested for peat.,1,semiNatural
+Grassland,110,"Predominantly native grasses and other herbaceous vegetation, may include some shrubland cover. ",1,semiNatural
+Agriculture (undifferentiated),120,"Agricultural land, including annual and perennial crops; and would exclude grassland. This class is mapped only if the distinction of sub-agricultural covers (classes 132-199) is not possible.",2,cropland
+Pasture / Forages,122,"Periodically cultivated. Includes tame grasses and other perennial crops such as alfalfa and clover grown alone or as mixtures for hay, pasture or seed. ",1,semiNatural
+Too Wet to be Seeded,130,Agricultural fields that are normally seeded that remain unseeded due to excess spring moisture. ,0,notRelevant
+Fallow,131,Plowed and harrowed fields that are left unsown for the growing season,1,semiNatural
+Cereals,132,This class is mapped only if the distinction of sub-cereal covers (classes 133-146) is not possible.,2,cropland
+Barley,133,,2,cropland
+Other Grains,134,,2,cropland
+Millet,135,,2,cropland
+Oats,136,,2,cropland
+Rye,137,,2,cropland
+Spelt,138,,2,cropland
+Triticale,139,,2,cropland
+Wheat,140,This sub-cereal class is mapped only if the distinction of sub-wheat covers (classes 145-146) is not possible.,2,cropland
+Switchgrass,141,,1,semiNatural
+Sorghum,142,,2,cropland
+Quinoa,143,,2,cropland
+Winter Wheat,145,,2,cropland
+Spring Wheat,146,,2,cropland
+Corn,147,,2,cropland
+Tobacco,148,,2,cropland
+Ginseng,149,,2,cropland
+Oilseeds,150,This class is mapped only if the distinction of sub-oilseed covers (classes 151-158) is not possible.,2,cropland
+Borage,151,,2,cropland
+Camelina,152,,2,cropland
+Canola / Rapeseed,153,,2,cropland
+Flaxseed,154,,2,cropland
+Mustard,155,,2,cropland
+Safflower,156,,2,cropland
+Sunflower,157,,2,cropland
+Soybeans,158,,2,cropland
+Pulses,160,This class is mapped only if the distinction of sub-pulse covers (classes 162-174) is not possible.,2,cropland
+Other Pulses,161,,2,cropland
+Peas,162,,2,cropland
+Chickpeas,163,,2,cropland
+Beans,167,,2,cropland
+Fababeans,168,,2,cropland
+Lentils,174,,2,cropland
+Vegetables,175,This class is mapped only if the distinction of sub-vegetable covers (classes 176-179) is not possible.,2,cropland
+Tomatoes,176,,2,cropland
+Potatoes,177,,2,cropland
+Sugarbeets,178,,2,cropland
+Other Vegetables,179,,2,cropland
+Fruits,180,This class is mapped only if the distinction of sub-fruit covers (classes 181-190) is not possible.,2,cropland
+Berries,181,This sub-fruit class is mapped only if the distinction of sub-berry covers (classes 182-185) is not possible.,2,cropland
+Blueberry,182,,2,cropland
+Cranberry,183,,2,cropland
+Other Berry,185,,2,cropland
+Orchards,188,,2,cropland
+Other Fruits,189,,2,cropland
+Vineyards,190,,2,cropland
+Hops,191,,2,cropland
+Sod,192,,2,cropland
+Herbs,193,,2,cropland
+Nursery,194,,2,cropland
+Buckwheat,195,,2,cropland
+Canaryseed,196,,2,cropland
+Hemp,197,,2,cropland
+Vetch,198,,2,cropland
+Other Crops,199,,2,cropland
+Forest (undifferentiated),200,Predominantly forested or treed areas. This class is mapped only if the distinction of sub-forest covers (classes 210-230) is not possible.,1,semiNatural
+Coniferous,210,Predominantly coniferous forests or treed areas  ,1,semiNatural
+Broadleaf,220,Predominantly broadleaf/deciduous forests or treed areas. ,1,semiNatural
+Mixedwood,230,Forest that is a combination of both the coniferous and broadleaf classes,1,semiNatural
