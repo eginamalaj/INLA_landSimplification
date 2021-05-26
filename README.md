@@ -1,3 +1,5 @@
+![image](https://user-images.githubusercontent.com/54320408/119604454-4f74a080-bdac-11eb-9002-a589ee47d19a.png)
+
 # Using a Bayesian Framework to explain changes in insecticide use in Canada over 20 years
 
 This file contains R code and data to run the analysis for the article:
