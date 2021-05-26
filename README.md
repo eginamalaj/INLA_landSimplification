@@ -1,4 +1,4 @@
-![image](https://user-images.githubusercontent.com/54320408/119604454-4f74a080-bdac-11eb-9002-a589ee47d19a.png)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4799489.svg)](https://doi.org/10.5281/zenodo.4799489)
 
 # Using a Bayesian Framework to explain changes in insecticide use in Canada over 20 years
 
