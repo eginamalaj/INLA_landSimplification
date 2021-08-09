@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------------------------------
 #
 # Code for paper:
-# Malaj & Morrissey (2021) Increased reliance on insecticide in Canada linked to simplified agricultural landscapes
-# In Review in Ecological Applications
+# Malaj & Morrissey (2021) Increased reliance on insecticide applications in Canada linked to simplified 
+# agricultural landscapes. Ecological Applications
 # Contact: eginamalaj@gmail.com
 #
 # ------------------------------------------------------------------------------------------------------
@@ -53,13 +53,12 @@ load("data/camapF2.RData") # call:camapF2 - Fortified Canada polygon file from c
 #
 # ------------------------------------------------------------------------------------------------------
 #
-findatCD<-findatCD%>% dplyr::select(-INSECTI) # remove insecticide area
-#
+findatCD<-findatCD%>% dplyr::select(-INSECTI)
 parsum<- as.data.frame(
   findatCD%>%
     group_by(REGION, C_YEAR)%>%
-    summarise_at(vars(grainPrc,oilsdPrc,plsesPrc,frtvegPrc,tilminPrc,netincm,frmsiz,gdd,pcp),
-                 list(min=min, mean=mean,max=max))%>% # Q1=~quantile(., probs = 0.25), Q3=~quantile(., probs = 0.75)
+    dplyr::summarise_at(vars(grainPrc,oilsdPrc,plsesPrc,frtvegPrc,tilminPrc,netincm,frmsiz,gdd,pcp),
+                        list(min=min, mean=mean,max=max))%>% # Q1=~quantile(., probs = 0.25), Q3=~quantile(., probs = 0.75)
     mutate(
       Cereal=paste0(round(grainPrc_mean,2), " (", round(grainPrc_min,2),",",round(grainPrc_max,2), ")"),
       Oilseeds=paste0(round(oilsdPrc_mean,2), " (", round(oilsdPrc_min,2),",",round(oilsdPrc_max,2), ")"),
@@ -94,6 +93,10 @@ ls_sim<- simulateResiduals(fittedModel = ls_mod, n = 250)
 x11();plot(ls_sim)
 testDispersion(ls_sim) # n.s. p-value indicates no under/overdispersion
 #
+aa = plot(ls_sim)
+ggsave(filename ="Fig1SI-LS.tiff", dpi=500, compression = "lzw", width =10, height=10, plot = aa)
+
+
 ls_anv<-Anova(ls_mod,type="II",test="Chisq")
 #
 ls_m<-emmeans(ls_mod, pairwise~C_YEAR|REGION, type = "response")
@@ -135,7 +138,7 @@ ls_plot<-plot(ls_m, comparisons =
                 TRUE, horizontal = FALSE, colors = c("black", "blue", "blue", "red"))+
   facet_wrap(~ REGION, nrow=1, strip.position="top")+
   theme_bw(base_size = 16)+
-  theme(strip.text.x = element_text(face="bold", size=16),
+  theme(strip.text.x = element_text(face="bold", size=14),
         axis.text.y = element_text(colour="black", size=12),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -143,9 +146,9 @@ ls_plot<-plot(ls_m, comparisons =
         panel.grid.minor = element_blank(),
         strip.background = element_blank(),
         panel.border = element_rect(colour = "black", fill = NA),
-        plot.margin = unit(c(0.2,0.2,0.2,0.2), "cm"))+ 
+        plot.margin = unit(c(0.2,0.3,0.2,0.2), "cm"))+ 
   #scale_y_discrete(breaks = c(0.15,0.25,0.35,0.45,0.55,0.65,0.75))+
-  labs(y = "", x = "Landscape Simplification")+
+  labs(y = "", x = "Landscape simplification")+
   zero_margin 
 #
 #
@@ -159,12 +162,13 @@ ins_plot<-
         axis.text.y = element_text(colour="black", size=12),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        plot.margin = unit(c(-1,0.2,1,0.2), "cm"))+ # ("top", "right", "bottom", "left") # remove the white space of around the graph
+        plot.margin = unit(c(-1,0.3,1,0), "cm"))+ # ("top", "right", "bottom", "left") # remove the white space of around the graph
   #scale_y_discrete(breaks = c(0.02,0.04,0.06,0.08,0.1,0.12,0.14,0.16))+
-  labs(y = "", x = "Insecticide Applications")+
+  labs(y = "Year", x = "Insecticide applications")+
   zero_margin 
 #
-ls_ins<-plot_grid(ls_plot,ins_plot, nrow = 2) #, rel_heights = c(3/5, 2/5)
+x11(width =10, height=10)
+ls_ins<-plot_grid(ls_plot,ins_plot, nrow = 2);ls_ins #, rel_heights = c(3/5, 2/5)
 #
 # ------------------------------------------------------------------------------------------------------
 #
@@ -271,7 +275,7 @@ ls_p<- ggplot() +
                                     x = long, 
                                     y = lat, 
                                     group = group),
-                                    color="white") +
+               color="white") +
   geom_polygon(data = camapF2, aes(x=long, y=lat, group = group), fill=NA, color = 'black', size = 0.1)+
   scale_x_continuous(limits = c(-1500000, 4300000))+ # everything visible
   scale_y_continuous(limits = c(4800000, 7500000))+
@@ -303,9 +307,9 @@ classIntervals((chng3$inschng[chng3$inschng<0]), n=2, style="equal")
 #
 # Manually picked breaks - note no zeros - either increased or decreased
 pdt_chng$brkc_ins <- cut(pdt_chng$inschng, include.lowest=FALSE,
-                        breaks=c(-91,-50, 0, 70, 200, 1210), # 
-                        labels=c("[-90 to -50)","[-50 to -0.7)", "[0.1 to 70)","[70 to 200)",
-                                 ">200")) 
+                         breaks=c(-91,-50, 0, 70, 200, 1210), # 
+                         labels=c("[-90 to -50)","[-50 to -0.7)", "[0.1 to 70)","[70 to 200)",
+                                  ">200")) 
 # Quantile scales - each class ~20-25%
 nrow(chng3[chng3$inschng<78 & chng3$inschng> 0.1,])/nrow(chng3) # 23%
 nrow(chng3[chng3$inschng<200 & chng3$inschng> 78,])/nrow(chng3) # 25%
@@ -317,34 +321,35 @@ nrow(chng3[chng3$inschng<0,])/nrow(chng3) # 30%
 #
 #
 ins_p<-
-      ggplot() +
-      geom_polygon(data = pdt_chng, aes(fill = brkc_ins, 
-                                        x = long, 
-                                        y = lat, 
-                                        group = group),
-                                        color="white") +
-      geom_polygon(data = camapF2, aes(x=long, y=lat, group = group), fill=NA, color = 'black', size = 0.1)+
-      scale_x_continuous(limits = c(-1500000, 4300000))+ # everything visible
-      scale_y_continuous(limits = c(4800000, 7500000))+
-      coord_equal() +
-      theme_map() +
-      theme(legend.position=c(0.05, 0.2),
-            legend.title=element_text(size=14),
-            legend.text=element_text(size=12),
-            plot.margin = unit(c(-0.7,0.1,-0.6,0.1), "cm"))+
-      scale_fill_manual(name="Change in \nInsecticide Applications (%)", #(white = no data) \n1996-2016
-                        values= c("#2166AC","#D1E5F0", # cols generated from brewer.pal(10,"RdBu")
-                                  "#FDBB84", 
-                                  "#EF6548","#D7301F",
-                                  "#B30000"))+ 
-      guides(fill = guide_legend(nrow = 1))+
-      #guide = guide_legend(reverse = F,
-      #                     fill = guide_legend(nrow = 2,byrow=TRUE)))+
-      labs(x = NULL, 
-           y = NULL)
+  ggplot() +
+  geom_polygon(data = pdt_chng, aes(fill = brkc_ins, 
+                                    x = long, 
+                                    y = lat, 
+                                    group = group),
+               color="white") +
+  geom_polygon(data = camapF2, aes(x=long, y=lat, group = group), fill=NA, color = 'black', size = 0.1)+
+  scale_x_continuous(limits = c(-1500000, 4300000))+ # everything visible
+  scale_y_continuous(limits = c(4800000, 7500000))+
+  coord_equal() +
+  theme_map() +
+  theme(legend.position=c(0.05, 0.2),
+        legend.title=element_text(size=14),
+        legend.text=element_text(size=12),
+        plot.margin = unit(c(-0.7,0.1,-0.6,0.1), "cm"))+
+  scale_fill_manual(name="Change in \nInsecticide applications (%)", #(white = no data) \n1996-2016
+                    values= c("#2166AC","#D1E5F0", # cols generated from brewer.pal(10,"RdBu")
+                              "#FDBB84", 
+                              "#EF6548","#D7301F",
+                              "#B30000"))+ 
+  guides(fill = guide_legend(nrow = 1))+
+  #guide = guide_legend(reverse = F,
+  #                     fill = guide_legend(nrow = 2,byrow=TRUE)))+
+  labs(x = NULL, 
+       y = NULL)
 #
 #X11(width = 11, height = 9)
-chng<-plot_grid(ls_p,ins_p, ncol=1, labels = c('A', 'B'))
+chng<-plot_grid(ls_p,ins_p, ncol=1, labels = c('A', 'B'), label_x = 0.05, vjust=3)
+#
 #
 # ------------------------------------------------------------------------------------------------------
 #
@@ -370,7 +375,7 @@ ca4<-ca3[!is.na(ca3$landSimp),]
 # Remove entries that have only 1 & 2 years reported
 camn<-ca4 %>% 
   group_by(id) %>% 
-  summarise(yr.n = length(yr))
+  dplyr::summarise(yr.n = length(yr))
 camn2<-camn[camn$yr.n<3,]; nrow(camn2) # 8 polygons that have less than 3 years
 #
 # Keep only polygons that have 3 years in common
@@ -392,11 +397,11 @@ ca5<-camn3%>%
 camn3 %>% 
   na.omit() %>% 
   group_by(REGION, yr) %>% 
-  summarise(ptg = n(),
-            grainPrc_n= (sum(grainPrc==0)/ptg)*100,
-            oilsdPrc_n= (sum(oilsdPrc==0)/ptg)*100,
-            frtvegPrc_n= (sum(frtvegPrc==0)/ptg)*100,
-            plsesPrc_n= (sum(plsesPrc==0)/ptg)*100
+  dplyr::summarise(ptg = n(),
+                   grainPrc_n= (sum(grainPrc==0)/ptg)*100,
+                   oilsdPrc_n= (sum(oilsdPrc==0)/ptg)*100,
+                   frtvegPrc_n= (sum(frtvegPrc==0)/ptg)*100,
+                   plsesPrc_n= (sum(plsesPrc==0)/ptg)*100
   )
 #
 #
@@ -404,12 +409,12 @@ camn3 %>%
 camn3 %>% 
   na.omit() %>% 
   group_by(REGION) %>% 
-  summarise(ptg = n(),
-            grain_mean= (mean(grainPrc*100)),
-            oilsd_mean= (mean(oilsdPrc*100)),
-            frtveg_mean= (mean(frtvegPrc*100)),
-            plses_mean= (mean(plsesPrc*100)),
-            tilg_mean= (mean(tilminPrc*100))
+  dplyr::summarise(ptg = n(),
+                   grain_mean= (mean(grainPrc*100)),
+                   oilsd_mean= (mean(oilsdPrc*100)),
+                   frtveg_mean= (mean(frtvegPrc*100)),
+                   plses_mean= (mean(plsesPrc*100)),
+                   tilg_mean= (mean(tilminPrc*100))
   )
 #
 # Removed per province everything that the average is less than 2 percent
@@ -471,7 +476,6 @@ ppr2<-merge(inla_ppr3, ppr, by.x='id', by.y='CDUID', all.x=T); nrow(unique(ppr2[
 #
 ppr3<-ppr2
 #
-#
 ## Data for spatial autocorrelation
 #
 # ids of polygon
@@ -483,9 +487,10 @@ cdppr <-join.sp.df(pprshp, dtppr, xcol="CDUID", ycol="cdid")
 nghbppr <- poly2nb(cdppr)
 nb2INLA("ppr.graph", nghbppr) # only once to create the .graph
 ppr.adj <- paste(getwd(),"/ppr.graph",sep="")
-g.ppr <- inla.read.graph("ppr.graph"); x11(); plot(g.ppr)
+g.ppr <- INLA::inla.read.graph("ppr.graph"); x11(); plot(g.ppr)
 summary(g.ppr)
 plot(nghbppr, coordinates(cdppr), col="gray", cex=0.2) # remove one CDUID to plot (from 54 to 53)
+#
 #
 # model6 main fixed effects and year trend plus random intercepts
 # for county and year and CAR intercept
@@ -499,7 +504,7 @@ plot(nghbppr, coordinates(cdppr), col="gray", cex=0.2) # remove one CDUID to plo
 #
 # Check for collinearity
 #
-cor(ppr3[!is.na(ppr3$insPrc),9:18]) # oilseeds remove
+cor(ppr3[!is.na(ppr3$insPrc),9:18]) ##collinear: oilseeds r>0.7  remove
 #
 fppr<- insPrc ~ 
   # fixed effects. 1 is for the intercept. -1 if we don't need an intercept
@@ -514,7 +519,7 @@ pprinla<- inla(fppr,family="beta",data=ppr3,
                control.predictor=list(link = 1, compute=T),
                control.compute=list(dic=T,cpo=T, waic=T),
                num.threads=6,
-               verbose=T)
+               verbose=TRUE)
 summary(pprinla)
 #
 #
@@ -585,10 +590,10 @@ g.bc <- inla.read.graph("bc.graph"); x11(); plot(g.bc)
 summary(g.bc)
 plot(nghbbc, coordinates(bcshp), col="gray", cex=0.2) # 19 in total - nothing to remove here
 #
-cor(bc3[!is.na(bc3$crplnd),c(9:13,15,17:19)])
+cor(bc3[!is.na(bc3$crplnd),c(9:13,15,17:19)]) #collinear:  r>0.7
 #
 fbc<- insPrc ~ 
-  1+ landSimp + frmsiz + netincm + tilminPrc +grainPrc+ frtvegPrc + 
+  1+ landSimp + frmsiz + tilminPrc +grainPrc+ frtvegPrc + netincm+
   gdd + pcp + 
   f(id_area_1, model="iid") + # random effect area
   f(id_year_1, model="iid") + # random effect year
@@ -678,10 +683,10 @@ g.cc <- inla.read.graph("cc.graph"); plot(g.cc)
 summary(g.cc)
 plot(nghbcc, coordinates(cdcc), col="gray", cex=0.2)# cdcc - coordinates of matching polygons only
 #
-cor(cc3[!is.na(cc3$insPrc),c(9:18)])# problem with grain and oilseeds
+cor(cc3[!is.na(cc3$insPrc),c(9:18)])# collinear: grain, oilseeds and tilminPrc r>0.7
 #
 fcc<- insPrc ~ 
-  1+ landSimp+ frmsiz + netincm + tilminPrc + frtvegPrc + gdd +pcp  +
+  1+ landSimp+ frmsiz + netincm + frtvegPrc + gdd +pcp  + tilminPrc+
   f(id_area_1, model="iid") + # random effect area
   f(id_year_1, model="iid") + # random effect year
   f(id_area_2, model="besag", graph=cc.adj, # space
@@ -769,7 +774,7 @@ g.ac <- inla.read.graph("ac.graph"); plot(g.ac)
 summary(g.ac)
 plot(nghbac, coordinates(cdac), col="gray", cex=0.2)
 #
-cor(ac3[!is.na(ac3$insPrc),c(9:18)])# grain remove
+cor(ac3[!is.na(ac3$insPrc),c(9:18)])# collinear: grain r>0.7
 #
 fac<- insPrc ~ 
   1+ landSimp + frmsiz + netincm + tilminPrc + frtvegPrc + gdd +pcp  +
@@ -789,6 +794,38 @@ as.data.frame(acinla$summary.fixed)
 plogis(-2.100737585 + (0.619839331*0.5))
 #
 #
+# ------------------------------------------------------------------------------------------------------
+#
+# Moran Index Test to test there is spatial autocorrelation
+#
+# ------------------------------------------------------------------------------------------------------
+# 
+# 1. BC
+wwbc <-  nb2listw(nghbbc)
+moran.test(bc3$insPrc[bc3$yr=="2016"], wwbc,na.action=na.omit)
+#
+# 2. Prairie
+wwppr <-  nb2listw(nghbppr)
+moran.test(ppr3$insPrc[ppr3$yr=="2016"], wwppr)
+#
+# 3. Central
+x11(); plot(cdcc); pointLabel(coordinates(cdcc),labels=cdcc$CDUID)
+#
+# remove one polygon that it's not connected
+cdcc2 = cdcc[!cdcc$CDUID==3553,]
+nghbcc2 <- poly2nb(cdcc2)
+wwcc <-  nb2listw(nghbcc2)
+moran.test(cc3$insPrc[cc3$yr=="2016" & !cc3$id==3553], wwcc,na.action=na.omit)
+#
+# 4. Atlantic
+x11(); plot(cdac); pointLabel(coordinates(cdac),labels=cdac$CDUID)
+#
+# remove one polygon that it's not connected
+cdac2 = cdac[!cdac$CDUID==1315,]
+nghbac2 <- poly2nb(cdac2)
+wwac <-  nb2listw(nghbac2)
+moran.test(ac3$insPrc[ac3$yr=="2016"& !ac3$id==1315], wwac,na.action=na.omit)
+#
 #
 # ------------------------------------------------------------------------------------------------------
 #
@@ -807,33 +844,33 @@ acfix<-as.data.frame(acinla$summary.fixed); acfix$parm<-rownames(acfix);acfix$pa
 #### All 
 #
 intbind<-
-      rbind(
-      pprfix[pprfix$parm=="intercept" | pprfix$parm=="landSimp", c(1,8:9)], 
-      bcfix[bcfix$parm=="intercept" | bcfix$parm=="landSimp", c(1,8:9)],
-      ccfix[ccfix$parm=="intercept" | ccfix$parm=="landSimp", c(1,8:9)],
-      acfix[acfix$parm=="intercept" | acfix$parm=="landSimp", c(1,8:9)]
-      )
+  rbind(
+    pprfix[pprfix$parm=="intercept" | pprfix$parm=="landSimp", c(1,8:9)], 
+    bcfix[bcfix$parm=="intercept" | bcfix$parm=="landSimp", c(1,8:9)],
+    ccfix[ccfix$parm=="intercept" | ccfix$parm=="landSimp", c(1,8:9)],
+    acfix[acfix$parm=="intercept" | acfix$parm=="landSimp", c(1,8:9)]
+  )
 #
 sppar<-spread(data=intbind, parm, mean)
 #
 sppar2<- sppar %>%
-             mutate(`0.1`=plogis(intercept+ (landSimp*0.1)),
-                    `0.2`=plogis(intercept+ (landSimp*0.2)),
-                    `0.3`=plogis(intercept+ (landSimp*0.3)),
-                    `0.4`=plogis(intercept+ (landSimp*0.4)),
-                    `0.5`=plogis(intercept+ (landSimp*0.5)),
-                    `0.51`=plogis(intercept+ (landSimp*0.51)),
-                    `0.55`=plogis(intercept+ (landSimp*0.55)),
-                    `0.6`=plogis(intercept+ (landSimp*0.6)),
-                    `0.63`=plogis(intercept+ (landSimp*0.63)),
-                    `0.7`=plogis(intercept+ (landSimp*0.7)),
-                    `0.8`=plogis(intercept+ (landSimp*0.8)),
-                    `0.9`=plogis(intercept+ (landSimp*0.9))
-              )%>%
-              dplyr :: select (-intercept,-landSimp)%>%
-              gather(
-                plandsimp ,predict, -Region
-              )
+  mutate(`0.1`=plogis(intercept+ (landSimp*0.1)),
+         `0.2`=plogis(intercept+ (landSimp*0.2)),
+         `0.3`=plogis(intercept+ (landSimp*0.3)),
+         `0.4`=plogis(intercept+ (landSimp*0.4)),
+         `0.5`=plogis(intercept+ (landSimp*0.5)),
+         `0.51`=plogis(intercept+ (landSimp*0.51)),
+         `0.55`=plogis(intercept+ (landSimp*0.55)),
+         `0.6`=plogis(intercept+ (landSimp*0.6)),
+         `0.63`=plogis(intercept+ (landSimp*0.63)),
+         `0.7`=plogis(intercept+ (landSimp*0.7)),
+         `0.8`=plogis(intercept+ (landSimp*0.8)),
+         `0.9`=plogis(intercept+ (landSimp*0.9))
+  )%>%
+  dplyr :: select (-intercept,-landSimp)%>%
+  gather(
+    plandsimp ,predict, -Region
+  )
 
 sppar2$plandsimp<-as.numeric(sppar2$plandsimp)
 sppar2$Region<-as.factor(sppar2$Region)
@@ -843,24 +880,28 @@ sppar3<-sppar2[sppar2$Region=="PRAIRIE" | sppar2$Region=="CENTRAL",]
 #
 x11(width=8, height=5)
 pred_plot<-
-      ggplot(data=sppar3, aes(x=plandsimp, y=predict, color=Region)) +
-      geom_line(size = 2, alpha = .8) +
-      #geom_point(data=sppar3, aes(x=plandsimp, y=predict), size = 3, color="black")+
-      geom_vline(xintercept = c(0.5,0.6, 0.7), linetype="dashed", size=1)+
-      annotate("rect",xmin=0.5,xmax=0.7,ymin=-Inf,ymax=Inf,alpha=0.1,fill="black")+
-      geom_text(aes(x=0.5, y=0.17, label="1996"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
-      geom_text(aes(x=0.6, y=0.17, label="2016"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
-      geom_text(aes(x=0.7, y=0.17, label="2036"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
-      theme_classic(base_size = 18) +
-      scale_colour_manual(values=c("#FC4E07","#E69F00")) +
-      scale_x_continuous(breaks = seq(min(sppar2$plandsimp), max(sppar2$plandsimp), by = 0.1))+
-      scale_y_continuous(breaks = seq(round(min(sppar2$predict),2), round(max(sppar2$predict),2), by = 0.02))+
-      theme(legend.position = c(0.15, 0.9),
-            axis.text.x = element_text(colour="black"),
-            axis.text.y = element_text(colour="black"))+
-      #scale_x_continuous(expand = c(0, 0)) +
-      #scale_y_continuous(sec.axis = sec_axis(~ ., breaks = d_ends))+
+  ggplot(data=sppar3, aes(x=plandsimp, y=predict, color=Region)) +
+  geom_line(size = 2, alpha = .8) +
+  #geom_point(data=sppar3, aes(x=plandsimp, y=predict), size = 3, color="black")+
+  geom_vline(xintercept = c(0.5,0.6, 0.7), linetype="dashed", size=1)+
+  annotate("rect",xmin=0.5,xmax=0.7,ymin=-Inf,ymax=Inf,alpha=0.1,fill="black")+
+  geom_text(aes(x=0.5, y=0.17, label="1996"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
+  geom_text(aes(x=0.6, y=0.17, label="2016"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
+  geom_text(aes(x=0.7, y=0.17, label="2036"), size=5, angle=90, vjust=-0.4, hjust=0, color="black")+
+  theme_classic(base_size = 18) +
+  scale_colour_manual(values=c("#FC4E07","#E69F00")) +
+  scale_x_continuous(breaks = seq(min(sppar2$plandsimp), max(sppar2$plandsimp), by = 0.1))+
+  scale_y_continuous(breaks = seq(round(min(sppar2$predict),2), round(max(sppar2$predict),2), by = 0.02))+
+  theme(legend.position = c(0.15, 0.9),
+        axis.text.x = element_text(colour="black"),
+        axis.text.y = element_text(colour="black"))+
+  #scale_x_continuous(expand = c(0, 0)) +
+  #scale_y_continuous(sec.axis = sec_axis(~ ., breaks = d_ends))+
   labs(x = "Landscape Simplification", y = "Predicted Insecticide Applications")
+#
+#
+#ggsave(filename =file.path(figdir, "Fig4_Predictions.tiff"), dpi=500, compression = "lzw", width =8, height=5, plot = pred_plot)
+#
 #
 # Plot INLA Estimates
 #
@@ -903,98 +944,51 @@ inac$Var <- rownames(inac); inac$region<-"ac"
 #
 inla_prov<-rbind(inppr,inbc,incc,inac)
 #
-inla_prov[inla_prov$Var=="frtvegPrc", ]
+inla_prov[inla_prov$region=="cc", ]
 #
 #
 #########################################################################################################
 #
-######### Figure S1 - Correlations for multicolinear variables
+######### Checking for multicolinearity 
 #
-# Put db together
+# lm to check VIFs
 #
-cora<-rbind(inla_ppr2[,c("id","yr","REGION","landSimp","grainPrc","oilsdPrc")],
-            inla_cc2[,c("id","yr","REGION","landSimp","grainPrc","oilsdPrc")],
-            inla_ac2[,c("id","yr","REGION","landSimp","grainPrc","oilsdPrc")])
-#
-cora2<-cora[!is.na(cora$landSimp),]
-#
-# Plot 
-#
-# !!! base_size big so they save at a decent size when using ggsave and plot_grid
-theme_Publication <- function(base_size=30, base_family="helvetica") {
-  library(grid)
-  library(ggthemes)
-  (theme_foundation(base_size=base_size, base_family=base_family)
-    + theme(plot.title = element_text(face = "bold",
-                                      size = rel(1.2), hjust = 0.5),
-            text = element_text(),
-            panel.background = element_rect(colour = NA),
-            plot.background = element_rect(colour = NA),
-            panel.border = element_rect(colour = NA),
-            axis.title = element_text(face = "bold",size = rel(1)),
-            axis.title.y = element_text(angle=90,vjust =2),
-            axis.title.x = element_text(vjust = -0.2),
-            axis.text = element_text(), 
-            axis.line = element_line(colour="black"),
-            axis.ticks = element_line(),
-            panel.grid.major = element_line(colour="#f0f0f0"),
-            panel.grid.minor = element_blank(),
-            legend.key = element_rect(colour = NA),
-            legend.position = "bottom",
-            legend.direction = "horizontal",
-            legend.key.size= unit(0.2, "cm"),
-            legend.margin = unit(0, "cm"),
-            legend.title = element_text(face="italic"),
-            plot.margin=unit(c(10,5,5,5),"mm"),
-            strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
-            strip.text = element_text(face="bold")
-    ))
-  
-}
-#
-# Grain
-#
-grain<-cora2[cora2$REGION=="ATLANTIC" | cora2$REGION=="CENTRAL",-6]
-gcor <- ddply(.data=grain, 
-              .(REGION), 
-              summarize, 
-              r=paste("r =", round(cor(landSimp,grainPrc),2)))
+glm_bc <- lm(insPrc ~ landSimp+frmsiz+tilminPrc+netincm+grainPrc+frtvegPrc+gdd+pcp,data = bc3)
+vif(glm_bc)
 
-gr<- ggplot(grain, aes(x=grainPrc, y=landSimp)) + 
-  geom_point(size=4)+
-  theme_Publication()+
-  facet_wrap(~REGION, ncol=1, strip.position = "right")+
-  #geom_smooth(method=loess)+
-  scale_y_continuous(limits = c(0,1))+
-  labs(x = "Prop. of cropland in grains",
-       y = "Landscape Simplification")+
-  geom_text(data=gcor, aes(x=0.1, y=0.95, label=r), 
-            colour="black", inherit.aes=FALSE, parse=FALSE, size=12)
+glm_ppr <- lm(insPrc ~ landSimp+frmsiz+tilminPrc+netincm+grainPrc+plsesPrc+gdd+pcp,data = ppr3)
+vif(glm_ppr)
 
+glm_cc <- lm(insPrc ~ landSimp+frmsiz+tilminPrc+netincm+frtvegPrc+gdd+pcp,data = cc3)
+vif(glm_cc)
+
+glm_ac <- lm(insPrc ~ landSimp+frmsiz+tilminPrc+netincm+frtvegPrc+gdd+pcp,data = ac3)
+vif(glm_ac)
 #
-# Oilseeds
 #
-oils<-cora2[cora2$REGION=="PRAIRIE" | cora2$REGION=="CENTRAL",-5]
-ocor <- ddply(.data=oils, 
-              .(REGION), 
-              summarize, 
-              r=paste("r =", round(cor(landSimp,oilsdPrc),2)))
-
-ol<- ggplot(oils, aes(x=oilsdPrc, y=landSimp)) + 
-  geom_point(size=4)+
-  theme_Publication()+
-  facet_wrap(~REGION, ncol=1, strip.position = "right")+
-  #geom_smooth(method=loess)+
-  labs(x = "Prop. of cropland in oilseeds & soybeans",
-       y = "Landscape Simplification")+
-  geom_text(data=ocor, aes(x=0.1, y=0.95, label=r), 
-            colour="black", inherit.aes=FALSE, parse=FALSE, size=12)
+# Correlations
 #
-x11(width=11, height=11)
-allin<-plot_grid(gr,ol, ncol=2)
+ls_col = c("REGION","landSimp","frmsiz","tilminPrc","netincm","grainPrc","oilsdPrc","frtvegPrc","plsesPrc","gdd","pcp")
 #
-#ggsave("VariableCor.tiff", dpi=600, compression = "lzw", width =20, height=20, plot = allin)
-
-
-
+cor_df<-rbind(
+  inla_bc2[,ls_col],
+  inla_ppr2[,ls_col],
+  inla_cc2[,ls_col],
+  inla_ac2[,ls_col])
+#
+#
+cor_bc=data.frame(cor(cor_df[cor_df$REGION=="PACIFIC",-1], use="pairwise.complete.obs"))
+cor_bc$var= row.names(cor_bc); cor_bc$Region="Pacific"
+#
+cor_ppr=data.frame(cor(cor_df[cor_df$REGION=="PRAIRIE",-1], use="pairwise.complete.obs"))
+cor_ppr$var= row.names(cor_ppr); cor_ppr$Region="Prairie"
+#
+cor_cc=data.frame(cor(cor_df[cor_df$REGION=="CENTRAL",-1], use="pairwise.complete.obs"))
+cor_cc$var= row.names(cor_cc); cor_cc$Region="Central"
+#
+cor_ac=data.frame(cor(cor_df[cor_df$REGION=="ATLANTIC",-1], use="pairwise.complete.obs"))
+cor_ac$var= row.names(cor_ac); cor_ac$Region="Atlantic"
+#
+cor_all=rbind(cor_bc,cor_ppr,cor_cc,cor_ac)
+#
 
